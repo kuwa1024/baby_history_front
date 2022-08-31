@@ -1,12 +1,11 @@
 import { initializeApp } from "firebase/app"
 
 initializeApp({
-  apiKey: "AIzaSyDREcAijXF35--t2kt_l9uVjATZGHtwmVQ",
-  authDomain: "sample-ddbd7.firebaseapp.com",
-  databaseURL: "https://sample-ddbd7-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "sample-ddbd7",
-  storageBucket: "sample-ddbd7.appspot.com",
-  messagingSenderId: "892724039712",
-  appId: "1:892724039712:web:a52c2e508ad947c5632c45",
-  measurementId: "G-3GKV4SQDVV"
+  apiKey: "AIzaSyDF8tDo0L3SIbb89eRNJlcvox2SySj0y9g",
+  authDomain: "baby-history.firebaseapp.com",
+  projectId: "baby-history",
+  storageBucket: "baby-history.appspot.com",
+  messagingSenderId: "1044710268481",
+  appId: "1:1044710268481:web:ef591eb0f41a7aec8370c0",
+  measurementId: "G-KN4SETMSGP"
 })
