@@ -1,4 +1,4 @@
-export const getFormattedDate = (date: Date, format: string): string => {
+export function getFormattedDate(date: Date, format: string): string {
   const symbol: { [key: string]: number } = {
     M: date.getMonth() + 1,
     d: date.getDate(),

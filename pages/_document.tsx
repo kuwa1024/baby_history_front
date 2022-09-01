@@ -23,10 +23,7 @@ class MyDocument extends Document {
   render(): ReactElement {
     return (
       <Html lang="ja">
-        <Head>
-          <title>赤ちゃん履歴</title>
-          {CssBaseline.flush()}
-        </Head>
+        <Head>{CssBaseline.flush()}</Head>
         <body>
           <Main />
           <NextScript />

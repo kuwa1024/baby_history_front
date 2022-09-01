@@ -1,33 +1,45 @@
-import { FC } from 'react'
+import { FC, useState, useMemo } from 'react'
 import { Grid, Table, Dropdown, Button } from '@nextui-org/react'
 import { useItems } from '../hooks/useItems'
+import { useNames } from '../hooks/useNames'
 import { getFormattedDate } from '../utils/common/date'
 
 export const ItemTable: FC = () => {
   const { isLoading, items } = useItems()
+  const { names } = useNames()
+  const [name, setName] = useState(new Set(['選択']))
+
+  const selectedName = useMemo(
+    () => Array.from(name).join(', ').replaceAll('_', ' '),
+    [name]
+  )
+
   if (isLoading) return <p>Loading...</p>
 
   return (
-    <div>
+    <>
       <Grid.Container gap={2}>
         <Grid>
-          <Dropdown>
-            <Dropdown.Button flat>Trigger</Dropdown.Button>
-            <Dropdown.Menu aria-label="Static Actions">
-              <Dropdown.Item key="new">New file</Dropdown.Item>
-              <Dropdown.Item key="copy">Copy link</Dropdown.Item>
-              <Dropdown.Item key="edit">Edit file</Dropdown.Item>
-              <Dropdown.Item key="delete" color="error">
-                Delete file
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+        <Dropdown>
+          <Dropdown.Button flat id="name">{selectedName}</Dropdown.Button>
+          <Dropdown.Menu
+            aria-label="name"
+            disallowEmptySelection
+            selectionMode="single"
+            selectedKeys={name}
+            onSelectionChange={setName}
+          >
+            {names.map((name) => (
+              <Dropdown.Item key={name.name}>{name.name}</Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
         </Grid>
         <Grid>
           <Button>検索</Button>
         </Grid>
       </Grid.Container>
-      <Table>
+      <Table aria-label="list">
         <Table.Header>
           <Table.Column>日付</Table.Column>
           <Table.Column>名称</Table.Column>
@@ -47,6 +59,6 @@ export const ItemTable: FC = () => {
           ))}
         </Table.Body>
       </Table>
-    </div>
+    </>
   )
 }
