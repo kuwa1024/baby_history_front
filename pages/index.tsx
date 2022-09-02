@@ -1,13 +1,12 @@
+import * as React from 'react'
 import type { NextPage } from 'next'
-import { Container } from '@nextui-org/react'
-import { getApp, FirebaseApp } from 'firebase/app'
+import Container from '@mui/material/Container'
 import { ItemAdd } from '../components/ItemAdd'
 import { ItemTable } from '../components/ItemTable'
 
 const Home: NextPage = () => {
-  const app: FirebaseApp = getApp()
   return (
-    <Container sm>
+    <Container maxWidth="md">
       <ItemAdd />
       <ItemTable />
     </Container>

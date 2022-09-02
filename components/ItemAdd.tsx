@@ -1,72 +1,87 @@
-import { FC, useState, useMemo } from 'react'
-import { Navbar, Dropdown, Button } from '@nextui-org/react'
+import { FC, useState } from 'react'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import TextField from '@mui/material/TextField'
+import MenuItem from '@mui/material/MenuItem'
+import Button from '@mui/material/Button'
 import { useNames } from '../hooks/useNames'
 import { useValues } from '../hooks/useValues'
 import { setItem } from '../hooks/setItem'
 
 export const ItemAdd: FC = () => {
-  const [name, setName] = useState(new Set(['母乳']))
-  const [value, setValue] = useState(new Set(['']))
+  const [name, setName] = useState('')
+  const [value, setValue] = useState('')
 
-  const selectedName = useMemo(
-    () => Array.from(name).join(', ').replaceAll('_', ' '),
-    [name]
-  )
+  const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value)
+  }
+
+  const handleChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value)
+  }
 
   const { names } = useNames()
-  const { values } = useValues(selectedName)
-
-  const selectedValue = useMemo(() => {
-    const str = Array.from(value).join(', ').replaceAll('_', ' ')
-    const obj = values.find((v) => v.key == str)
-    return obj?.name ?? values[0]?.name
-  }, [value, values])
+  const { values } = useValues(name)
 
   const handleClick = () => {
-    setItem(selectedName, Array.from(value).join(', ').replaceAll('_', ' '))
+    const new_value = value == '選択' ? '' : value
+    setItem(name, new_value)
+    setName('')
+    setValue('')
   }
 
   return (
-    <Navbar isCompact variant="sticky">
-      <Navbar.Brand></Navbar.Brand>
-      <Navbar.Content>
-        <Dropdown>
-          <Dropdown.Button flat id="name">
-            {selectedName}
-          </Dropdown.Button>
-          <Dropdown.Menu
-            aria-label="name"
-            disallowEmptySelection
-            selectionMode="single"
-            selectedKeys={name}
-            onSelectionChange={setName}
-          >
-            {names.map((name) => (
-              <Dropdown.Item key={name.name}>{name.name}</Dropdown.Item>
-            ))}
-          </Dropdown.Menu>
-        </Dropdown>
-        <Dropdown>
-          <Dropdown.Button flat id="value">
-            {selectedValue}
-          </Dropdown.Button>
-          <Dropdown.Menu
-            aria-label="value"
-            disallowEmptySelection
-            selectionMode="single"
-            selectedKeys={value}
-            onSelectionChange={setValue}
-          >
-            {values.map((value) => (
-              <Dropdown.Item key={value.key}>{value.name}</Dropdown.Item>
-            ))}
-          </Dropdown.Menu>
-        </Dropdown>
-        <Button auto onPress={handleClick}>
-          追加
+    <AppBar position="sticky">
+      <Toolbar
+        sx={{
+          '& .MuiTextField-root': { width: '30%' },
+        }}
+      >
+        <Typography
+          variant="h6"
+          component="a"
+          href="/"
+          sx={{ flexGrow: 1, color: 'inherit', textDecoration: 'none' }}
+        >
+          履歴
+        </Typography>
+        <TextField
+          id="name"
+          select
+          label="名称"
+          defaultValue=""
+          value={name}
+          size="small"
+          sx={{ '.MuiSelect-select': { background: '#fff' } }}
+          onChange={handleChangeName}
+        >
+          {names.map((name) => (
+            <MenuItem key={name.name} value={name.name}>
+              {name.name}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          id="value"
+          select
+          label="内容"
+          defaultValue=""
+          value={value}
+          size="small"
+          sx={{ '.MuiSelect-select': { background: '#fff' } }}
+          onChange={handleChangeValue}
+        >
+          {values.map((value) => (
+            <MenuItem key={value.name} value={value.name}>
+              {value.name}
+            </MenuItem>
+          ))}
+        </TextField>
+        <Button color="inherit" size="large" onClick={handleClick}>
+          登録
         </Button>
-      </Navbar.Content>
-      <Navbar.Content></Navbar.Content>
-    </Navbar>
+      </Toolbar>
+    </AppBar>
   )
 }
