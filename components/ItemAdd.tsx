@@ -19,6 +19,8 @@ export const ItemAdd: FC<Props> = ({event, setEvent}) => {
   const router = useRouter()
   const [name, setName] = useState('')
   const [value, setValue] = useState('')
+  const [inputError, setInputError] = useState(false);
+  const [inputErrorMessage, setInputErrorMessage] = useState('');
 
   const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value)
@@ -33,10 +35,19 @@ export const ItemAdd: FC<Props> = ({event, setEvent}) => {
 
   const handleClick = () => {
     const new_value = value == '選択' ? '' : value
+    if (name == '') {
+      setInputError(true)
+      setInputErrorMessage('入力してください')
+      return
+    } else {
+      setInputError(false)
+      setInputErrorMessage('')
+    }
+
     setItem(name, new_value)
     setName('')
     setValue('')
-    setEvent(performance.now())
+    setEvent(Math.random())
     router.push('/')
   }
 
@@ -59,6 +70,8 @@ export const ItemAdd: FC<Props> = ({event, setEvent}) => {
           id="name"
           select
           label="名称"
+          error={inputError}
+          helperText={inputErrorMessage}
           defaultValue=""
           value={name}
           size="small"

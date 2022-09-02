@@ -5,7 +5,7 @@ import { ItemAdd } from '../components/ItemAdd'
 import { ItemTable } from '../components/ItemTable'
 
 const Home: NextPage = () => {
-  const [event, setEvent] = useState(performance.now())
+  const [event, setEvent] = useState(Math.random())
 
   return (
     <Container maxWidth="md">

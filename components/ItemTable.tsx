@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -21,15 +21,35 @@ type Props = {
   setEvent: React.Dispatch<React.SetStateAction<number>>
 }
 
-export const ItemTable: FC<Props> = ({event, setEvent}) => {
+export const ItemTable: FC<Props> = ({ event, setEvent }) => {
   const [search, setSearch] = useState('')
+  const [name, setName] = useState('')
+  const [cursor, setCursor] = useState<string | null>()
+  const [distanceBottom, setDistanceBottom] = useState(0)
+  const { names } = useNames()
+  const { items, next, isLoading } = useItems(event, name, cursor)
+  const [rows, setRows] = useState(items)
 
   const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value)
   }
 
-  const { names } = useNames()
-  const { isLoading, items } = useItems(event)
+  const handleClick = () => {
+    setName(search)
+  }
+
+  useEffect(() => {
+    void (() => {
+      setRows(Array.from(new Set(rows.concat(items))))
+    })()
+  }, [items])
+
+  useEffect(() => {
+    void (() => {
+      setRows([])
+      setCursor(null)
+    })()
+  }, [event, name])
 
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
@@ -40,7 +60,20 @@ export const ItemTable: FC<Props> = ({event, setEvent}) => {
     },
   }))
 
-  if (isLoading) return <CircularProgress />
+  const handleScroll = () => {
+    let bottom = document.body.scrollHeight - window.innerHeight
+    if (!distanceBottom) {
+      setDistanceBottom(Math.round((bottom / 100) * 20))
+    }
+    if (window.pageYOffset > bottom - distanceBottom && next && !isLoading) {
+      setCursor(next)
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('scroll', handleScroll)
+    return (): void => document.removeEventListener('scroll', handleScroll)
+  })
 
   return (
     <Box component="main">
@@ -66,7 +99,9 @@ export const ItemTable: FC<Props> = ({event, setEvent}) => {
             </MenuItem>
           ))}
         </TextField>
-        <Button variant="contained">検索</Button>
+        <Button variant="contained" onClick={handleClick}>
+          検索
+        </Button>
       </Box>
       <TableContainer component={Paper}>
         <Table>
@@ -78,7 +113,7 @@ export const ItemTable: FC<Props> = ({event, setEvent}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {items.map((item) => (
+            {rows.map((item) => (
               <StyledTableRow key={item.id}>
                 <TableCell component="th" scope="row" align="center">
                   {getFormattedDate(item.datetime.toDate(), 'MM/dd hh:mm')}
@@ -91,6 +126,7 @@ export const ItemTable: FC<Props> = ({event, setEvent}) => {
             ))}
           </TableBody>
         </Table>
+        {isLoading && <CircularProgress />}
       </TableContainer>
     </Box>
   )
