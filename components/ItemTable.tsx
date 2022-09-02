@@ -16,7 +16,12 @@ import { useItems } from '../hooks/useItems'
 import { useNames } from '../hooks/useNames'
 import { getFormattedDate } from '../utils/common/date'
 
-export const ItemTable: FC = () => {
+type Props = {
+  event: number
+  setEvent: React.Dispatch<React.SetStateAction<number>>
+}
+
+export const ItemTable: FC<Props> = ({event, setEvent}) => {
   const [search, setSearch] = useState('')
 
   const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,7 +29,7 @@ export const ItemTable: FC = () => {
   }
 
   const { names } = useNames()
-  const { isLoading, items } = useItems()
+  const { isLoading, items } = useItems(event)
 
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {

@@ -1,4 +1,5 @@
 import { FC, useState } from 'react'
+import { useRouter } from 'next/router'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
@@ -9,7 +10,13 @@ import { useNames } from '../hooks/useNames'
 import { useValues } from '../hooks/useValues'
 import { setItem } from '../hooks/setItem'
 
-export const ItemAdd: FC = () => {
+type Props = {
+  event: number
+  setEvent: React.Dispatch<React.SetStateAction<number>>
+}
+
+export const ItemAdd: FC<Props> = ({event, setEvent}) => {
+  const router = useRouter()
   const [name, setName] = useState('')
   const [value, setValue] = useState('')
 
@@ -29,6 +36,8 @@ export const ItemAdd: FC = () => {
     setItem(name, new_value)
     setName('')
     setValue('')
+    setEvent(performance.now())
+    router.push('/')
   }
 
   return (

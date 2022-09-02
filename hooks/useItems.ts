@@ -11,7 +11,7 @@ const DEFAULT_OUTPUT: UseItemsOutput = {
   items: [],
 }
 
-export function useItems(): UseItemsOutput {
+export function useItems(event: number): UseItemsOutput {
   const [output, setOutput] = useState(DEFAULT_OUTPUT)
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export function useItems(): UseItemsOutput {
       const { items } = await getItems()
       setOutput({ isLoading: false, items })
     })()
-  }, [])
+  }, [event])
 
   return output
 }
