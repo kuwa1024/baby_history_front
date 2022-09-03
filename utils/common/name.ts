@@ -3,7 +3,8 @@ export type Name = {
 }
 
 const names: Name[] = [
-  { name: '母乳' },
+  { name: '母乳(右)' },
+  { name: '母乳(左)' },
   { name: 'ミルク' },
   { name: '搾乳' },
   { name: 'おしっこ' },

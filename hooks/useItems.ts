@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 import { Item, gets } from '../utils/firebase/items'
 

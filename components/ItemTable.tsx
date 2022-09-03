@@ -12,9 +12,15 @@ import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import AddAlarmIcon from '@mui/icons-material/AddAlarm'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
 import { useItems } from '../hooks/useItems'
 import { useNames } from '../hooks/useNames'
+import { delItem } from '../hooks/delItem'
 import { getFormattedDate } from '../utils/common/date'
+import { Item } from '../utils/firebase/items'
 
 type Props = {
   event: number
@@ -28,14 +34,19 @@ export const ItemTable: FC<Props> = ({ event, setEvent }) => {
   const [distanceBottom, setDistanceBottom] = useState(0)
   const { names } = useNames()
   const { items, next, isLoading } = useItems(event, name, cursor)
-  const [rows, setRows] = useState(items)
+  const [rows, setRows] = useState<Item[]>([])
 
-  const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value)
   }
 
-  const handleClick = () => {
+  const handleSearchClick = () => {
     setName(search)
+  }
+
+  const handleDeleteClick = (e: string) => {
+    delItem(e)
+    setEvent(Math.random())
   }
 
   useEffect(() => {
@@ -46,8 +57,8 @@ export const ItemTable: FC<Props> = ({ event, setEvent }) => {
 
   useEffect(() => {
     void (() => {
-      setRows([])
       setCursor(null)
+      setRows([])
     })()
   }, [event, name])
 
@@ -91,7 +102,7 @@ export const ItemTable: FC<Props> = ({ event, setEvent }) => {
           value={search}
           size="small"
           sx={{ '.MuiSelect-select': { background: '#fff' } }}
-          onChange={handleChangeSearch}
+          onChange={handleSearchChange}
         >
           {names.map((name) => (
             <MenuItem key={name.name} value={name.name}>
@@ -99,7 +110,7 @@ export const ItemTable: FC<Props> = ({ event, setEvent }) => {
             </MenuItem>
           ))}
         </TextField>
-        <Button variant="contained" onClick={handleClick}>
+        <Button variant="contained" onClick={handleSearchClick}>
           検索
         </Button>
       </Box>
@@ -119,9 +130,23 @@ export const ItemTable: FC<Props> = ({ event, setEvent }) => {
                   {getFormattedDate(item.datetime.toDate(), 'MM/dd hh:mm')}
                 </TableCell>
                 <TableCell>
-                  {item.name} {item.value}
+                  {item.name}{' '}
+                  {(item.name.match(/母乳/) && item.value == '') ? (
+                    <IconButton aria-label="alarm" size="small">
+                      <AddAlarmIcon fontSize="small" />
+                    </IconButton>
+                  ) : (
+                    item.value
+                  )}
                 </TableCell>
-                <TableCell align="center">編集 削除</TableCell>
+                <TableCell align="center">
+                  <IconButton aria-label="edit" size="small" href={`/items/${item.id}`}>
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton aria-label="delete" size="small" onClick={handleDeleteClick.bind(this, item.id)}>
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </TableCell>
               </StyledTableRow>
             ))}
           </TableBody>

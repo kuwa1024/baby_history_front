@@ -8,7 +8,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import { useNames } from '../hooks/useNames'
 import { useValues } from '../hooks/useValues'
-import { setItem } from '../hooks/setItem'
+import { addItem } from '../hooks/addItem'
 
 type Props = {
   event: number
@@ -44,7 +44,7 @@ export const ItemAdd: FC<Props> = ({event, setEvent}) => {
       setInputErrorMessage('')
     }
 
-    setItem(name, new_value)
+    addItem(name, new_value)
     setName('')
     setValue('')
     setEvent(Math.random())
