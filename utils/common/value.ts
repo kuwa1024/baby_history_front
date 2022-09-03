@@ -7,6 +7,8 @@ export function getValues(name: string = '') {
   values.push({ name: '選択' })
   switch (name) {
     case '母乳':
+    case '母乳(右)':
+    case '母乳(左)':
       for (let i = 1; i <= 60; i++) {
         values.push({ name: i.toString().concat('分') })
       }

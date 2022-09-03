@@ -18,6 +18,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useItems } from '../hooks/useItems'
 import { useNames } from '../hooks/useNames'
+import { setAlarm } from '../hooks/editItem'
 import { delItem } from '../hooks/delItem'
 import { getFormattedDate } from '../utils/common/date'
 import { Item } from '../utils/firebase/items'
@@ -42,6 +43,11 @@ export const ItemTable: FC<Props> = ({ event, setEvent }) => {
 
   const handleSearchClick = () => {
     setName(search)
+  }
+
+  const handleAlarmClick = async (e: string) => {
+    await setAlarm(e)
+    setEvent(Math.random())
   }
 
   const handleDeleteClick = (e: string) => {
@@ -132,7 +138,7 @@ export const ItemTable: FC<Props> = ({ event, setEvent }) => {
                 <TableCell>
                   {item.name}{' '}
                   {(item.name.match(/母乳/) && item.value == '') ? (
-                    <IconButton aria-label="alarm" size="small">
+                    <IconButton aria-label="alarm" size="small" onClick={handleAlarmClick.bind(this, item.id)}>
                       <AddAlarmIcon fontSize="small" />
                     </IconButton>
                   ) : (
