@@ -17,13 +17,14 @@ async function addItem(
 }
 
 const add: NextPage = () => {
-  return
   for (var key in json) {
+    /*
     console.log(
       json[key].name + ' : ' + json[key].value + ' : ' + json[key].datetime
     )
 
     addItem(json[key].name, json[key].value ?? '', json[key].datetime)
+    */
   }
 
   return <Container maxWidth="md">OK</Container>
