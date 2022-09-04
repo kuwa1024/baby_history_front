@@ -1,33 +1,53 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
+import { Box } from '@mui/system'
 import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
+import { Timestamp } from 'firebase/firestore'
 import { useNames } from '../hooks/useNames'
 import { useValues } from '../hooks/useValues'
-import { addItem } from '../hooks/addItem'
+import { getItem } from '../hooks/getItem'
+import { editItem } from '../hooks/editItem'
+import { getFormattedDate } from '../utils/common/date'
 
 type Props = {
   event: number
   setEvent: React.Dispatch<React.SetStateAction<number>>
 }
 
-export const ItemAdd: FC<Props> = ({ event, setEvent }) => {
+export const ItemEdit: FC<Props> = ({ event, setEvent }) => {
   const router = useRouter()
+  const { id } = router.query
+  const item = getItem(id as string)
   const [name, setName] = useState('')
   const [value, setValue] = useState('')
+  const [datetime, setDatetime] = useState('')
   const [inputError, setInputError] = useState(false)
   const [inputErrorMessage, setInputErrorMessage] = useState('')
 
-  const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    void (() => {
+      if (item) {
+        setName(item.name)
+        setValue(item.value)
+        setDatetime(
+          getFormattedDate(item.datetime.toDate(), 'yyyy-MM-ddThh:mm')
+        )
+      }
+    })()
+  }, [item])
+
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value)
   }
 
-  const handleChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value)
+  }
+
+  const handleDatetimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDatetime(event.target.value)
   }
 
   const { names } = useNames()
@@ -44,28 +64,35 @@ export const ItemAdd: FC<Props> = ({ event, setEvent }) => {
       setInputErrorMessage('')
     }
 
-    addItem(name, new_value)
-    setName('')
-    setValue('')
+    editItem(item.id, name, value, Timestamp.fromDate(new Date(datetime)))
     setEvent(Math.random())
     router.push('/')
   }
 
   return (
-    <AppBar position="sticky">
-      <Toolbar
-        sx={{
-          '& .MuiTextField-root': { width: '30%' },
-        }}
-      >
-        <Typography
-          variant="h6"
-          component="a"
-          href="/"
-          sx={{ flexGrow: 1, color: 'inherit', textDecoration: 'none' }}
-        >
-          履歴
-        </Typography>
+    <Box
+      sx={{
+        '& .MuiTextField-root': { m: 2, width: '25ch' },
+      }}
+    >
+      <div>
+        <Button variant="contained" href="/">
+          戻る
+        </Button>
+      </div>
+      <div>
+        <TextField
+          id="datetime-local"
+          label="日付"
+          type="datetime-local"
+          value={datetime}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          onChange={handleDatetimeChange}
+        />
+      </div>
+      <div>
         <TextField
           id="name"
           select
@@ -75,8 +102,7 @@ export const ItemAdd: FC<Props> = ({ event, setEvent }) => {
           defaultValue=""
           value={name}
           size="small"
-          sx={{ '.MuiSelect-select': { background: '#fff' } }}
-          onChange={handleChangeName}
+          onChange={handleNameChange}
         >
           {names.map((name) => (
             <MenuItem key={name.name} value={name.name}>
@@ -84,6 +110,8 @@ export const ItemAdd: FC<Props> = ({ event, setEvent }) => {
             </MenuItem>
           ))}
         </TextField>
+      </div>
+      <div>
         <TextField
           id="value"
           select
@@ -91,8 +119,7 @@ export const ItemAdd: FC<Props> = ({ event, setEvent }) => {
           defaultValue=""
           value={value}
           size="small"
-          sx={{ '.MuiSelect-select': { background: '#fff' } }}
-          onChange={handleChangeValue}
+          onChange={handleValueChange}
         >
           {values.map((value) => (
             <MenuItem key={value.name} value={value.name}>
@@ -100,10 +127,12 @@ export const ItemAdd: FC<Props> = ({ event, setEvent }) => {
             </MenuItem>
           ))}
         </TextField>
-        <Button color="inherit" size="large" onClick={handleClick}>
-          登録
+      </div>
+      <div>
+        <Button size="large" variant="contained" onClick={handleClick}>
+          変更
         </Button>
-      </Toolbar>
-    </AppBar>
+      </div>
+    </Box>
   )
 }

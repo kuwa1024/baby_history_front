@@ -1,19 +1,16 @@
+import { useState } from 'react'
 import type { NextPage } from 'next'
-import { Container, Navbar } from '@nextui-org/react'
-import { getApp, FirebaseApp } from 'firebase/app'
+import Container from '@mui/material/Container'
 import { ItemAdd } from '../components/ItemAdd'
 import { ItemTable } from '../components/ItemTable'
 
 const Home: NextPage = () => {
-  const app: FirebaseApp = getApp()
+  const [event, setEvent] = useState(Math.random())
+
   return (
-    <Container sm>
-      <Navbar isCompact isBordered variant="sticky">
-        <Navbar.Brand>
-          <ItemAdd />
-        </Navbar.Brand>
-      </Navbar>
-      <ItemTable />
+    <Container maxWidth="md">
+      <ItemAdd event={event} setEvent={setEvent} />
+      <ItemTable event={event} setEvent={setEvent} />
     </Container>
   )
 }
