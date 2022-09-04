@@ -16,12 +16,11 @@ import IconButton from '@mui/material/IconButton'
 import AddAlarmIcon from '@mui/icons-material/AddAlarm'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { useItems } from '../hooks/useItems'
+import { Item, useItems } from '../hooks/useItems'
 import { useNames } from '../hooks/useNames'
 import { setAlarm } from '../hooks/editItem'
 import { delItem } from '../hooks/delItem'
 import { getFormattedDate } from '../utils/common/date'
-import { Item } from '../utils/firebase/items'
 
 type Props = {
   event: number
@@ -51,6 +50,9 @@ export const ItemTable: FC<Props> = ({ event, setEvent }) => {
   }
 
   const handleDeleteClick = (e: string) => {
+    if (!window.confirm('削除してもよろしいですか？')) {
+      return
+    }
     delItem(e)
     setEvent(Math.random())
   }
@@ -137,8 +139,12 @@ export const ItemTable: FC<Props> = ({ event, setEvent }) => {
                 </TableCell>
                 <TableCell>
                   {item.name}{' '}
-                  {(item.name.match(/母乳/) && item.value == '') ? (
-                    <IconButton aria-label="alarm" size="small" onClick={handleAlarmClick.bind(this, item.id)}>
+                  {item.name.match(/母乳/) && item.value == '' ? (
+                    <IconButton
+                      aria-label="alarm"
+                      size="small"
+                      onClick={handleAlarmClick.bind(this, item.id)}
+                    >
                       <AddAlarmIcon fontSize="small" />
                     </IconButton>
                   ) : (
@@ -146,10 +152,18 @@ export const ItemTable: FC<Props> = ({ event, setEvent }) => {
                   )}
                 </TableCell>
                 <TableCell align="center">
-                  <IconButton aria-label="edit" size="small" href={`/items/${item.id}`}>
+                  <IconButton
+                    aria-label="edit"
+                    size="small"
+                    href={`/${item.id}`}
+                  >
                     <EditIcon fontSize="small" />
                   </IconButton>
-                  <IconButton aria-label="delete" size="small" onClick={handleDeleteClick.bind(this, item.id)}>
+                  <IconButton
+                    aria-label="delete"
+                    size="small"
+                    onClick={handleDeleteClick.bind(this, item.id)}
+                  >
                     <DeleteIcon fontSize="small" />
                   </IconButton>
                 </TableCell>

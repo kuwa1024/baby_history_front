@@ -1,5 +1,7 @@
 import useSWR from 'swr'
-import { Item, gets } from '../utils/firebase/items'
+import { Item as I, gets } from '../utils/firebase/items'
+
+export type Item = I
 
 export type UseItems = {
   items: Item[]

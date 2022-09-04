@@ -74,7 +74,7 @@ export async function get(id: string): Promise<Item> {
   const db = getFirestore()
   const docSnap = await getDoc(doc(db, 'items', id))
   if (docSnap.exists()) {
-    return {...docSnap.data(), id: id} as Item
+    return { ...docSnap.data(), id: id } as Item
   } else {
     throw new Error('Item is not found')
   }

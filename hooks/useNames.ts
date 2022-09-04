@@ -14,7 +14,7 @@ export function useNames(): UseNamesOutput {
 
   useEffect(() => {
     void (() => {
-      const {names} = getNames()
+      const { names } = getNames()
       setOutput({ names })
     })()
   }, [])
