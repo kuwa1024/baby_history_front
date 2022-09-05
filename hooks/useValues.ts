@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react'
 import { Value, getValues } from '../utils/common/value'
 
-export type UseValuesOutput = {
+type UseValues = {
   values: Value[]
 }
 
-const DEFAULT_OUTPUT: UseValuesOutput = {
+const init: UseValues = {
   values: [],
 }
 
-export function useValues(key: string = ''): UseValuesOutput {
-  const [output, setOutput] = useState(DEFAULT_OUTPUT)
+export function useValues(key: string = ''): UseValues {
+  const [value, setValue] = useState(init)
 
   useEffect(() => {
     void (() => {
       const { values } = getValues(key)
-      setOutput({ values })
+      setValue({ values })
     })()
   }, [key])
 
-  return output
+  return value
 }

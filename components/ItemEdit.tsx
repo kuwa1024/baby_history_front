@@ -1,30 +1,28 @@
 import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Box } from '@mui/system'
-import TextField from '@mui/material/TextField'
-import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import { Timestamp } from 'firebase/firestore'
+import { DatePicker } from '../components/elements/DatePicker'
+import { Dropdown } from '../components/elements/Dropdown'
 import { useNames } from '../hooks/useNames'
 import { useValues } from '../hooks/useValues'
 import { getItem } from '../hooks/getItem'
 import { editItem } from '../hooks/editItem'
 import { getFormattedDate } from '../utils/common/date'
+import { PropsEvent } from '../types/propsEvent'
 
-type Props = {
-  event: number
-  setEvent: React.Dispatch<React.SetStateAction<number>>
-}
-
-export const ItemEdit: FC<Props> = ({ event, setEvent }) => {
+export const ItemEdit: FC<PropsEvent> = ({ event, setEvent }) => {
   const router = useRouter()
   const { id } = router.query
   const item = getItem(id as string)
   const [name, setName] = useState('')
   const [value, setValue] = useState('')
   const [datetime, setDatetime] = useState('')
-  const [inputError, setInputError] = useState(false)
-  const [inputErrorMessage, setInputErrorMessage] = useState('')
+  const [error, setError] = useState(false)
+  const [helperText, setHelperText] = useState('')
+  const { names } = useNames()
+  const { values } = useValues(name)
 
   useEffect(() => {
     void (() => {
@@ -38,30 +36,15 @@ export const ItemEdit: FC<Props> = ({ event, setEvent }) => {
     })()
   }, [item])
 
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value)
-  }
-
-  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value)
-  }
-
-  const handleDatetimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDatetime(event.target.value)
-  }
-
-  const { names } = useNames()
-  const { values } = useValues(name)
-
   const handleClick = () => {
     const new_value = value == '選択' ? '' : value
     if (name == '') {
-      setInputError(true)
-      setInputErrorMessage('入力してください')
+      setError(true)
+      setHelperText('入力してください')
       return
     } else {
-      setInputError(false)
-      setInputErrorMessage('')
+      setError(false)
+      setHelperText('')
     }
 
     editItem(item.id, name, new_value, Timestamp.fromDate(new Date(datetime)))
@@ -81,52 +64,27 @@ export const ItemEdit: FC<Props> = ({ event, setEvent }) => {
         </Button>
       </div>
       <div>
-        <TextField
-          id="datetime-local"
-          label="日付"
-          type="datetime-local"
-          value={datetime}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          onChange={handleDatetimeChange}
+        <DatePicker value={datetime} setValue={setDatetime} />
+      </div>
+      <div>
+        <Dropdown
+          id="name"
+          label="名称"
+          value={name}
+          setValue={setName}
+          values={names}
+          error={error}
+          helperText={helperText}
         />
       </div>
       <div>
-        <TextField
-          id="name"
-          select
-          label="名称"
-          error={inputError}
-          helperText={inputErrorMessage}
-          defaultValue=""
-          value={name}
-          size="small"
-          onChange={handleNameChange}
-        >
-          {names.map((name) => (
-            <MenuItem key={name.name} value={name.name}>
-              {name.name}
-            </MenuItem>
-          ))}
-        </TextField>
-      </div>
-      <div>
-        <TextField
+        <Dropdown
           id="value"
-          select
           label="内容"
-          defaultValue=""
           value={value}
-          size="small"
-          onChange={handleValueChange}
-        >
-          {values.map((value) => (
-            <MenuItem key={value.name} value={value.name}>
-              {value.name}
-            </MenuItem>
-          ))}
-        </TextField>
+          setValue={setValue}
+          values={values}
+        />
       </div>
       <div>
         <Button size="large" variant="contained" onClick={handleClick}>
