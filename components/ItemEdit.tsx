@@ -64,7 +64,7 @@ export const ItemEdit: FC<Props> = ({ event, setEvent }) => {
       setInputErrorMessage('')
     }
 
-    editItem(item.id, name, value, Timestamp.fromDate(new Date(datetime)))
+    editItem(item.id, name, new_value, Timestamp.fromDate(new Date(datetime)))
     setEvent(Math.random())
     router.push('/')
   }
