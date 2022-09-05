@@ -31,7 +31,11 @@ export const ItemTable: FC<PropsEvent> = ({ event, setEvent }) => {
 
   useEffect(() => {
     void (() => {
-      setRows(Array.from(new Set(rows.concat(items))))
+      const newItems = items.filter((item) => {
+        return !rows.some((row) => row.id === item.id)
+      })
+      const newRows = rows.concat(newItems)
+      setRows(newRows)
     })()
   }, [items])
 
@@ -87,7 +91,12 @@ export const ItemTable: FC<PropsEvent> = ({ event, setEvent }) => {
           </TableHead>
           <TableBody>
             {rows.map((item) => (
-              <ItemRow item={item} event={event} setEvent={setEvent} />
+              <ItemRow
+                item={item}
+                event={event}
+                setEvent={setEvent}
+                key={item.id}
+              />
             ))}
           </TableBody>
         </Table>

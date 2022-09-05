@@ -17,7 +17,6 @@ type Props = PropsEvent & {
 }
 
 export const ItemRow: FC<Props> = ({ item, event, setEvent }) => {
-
   const handleAlarmClick = async (e: string) => {
     await setAlarm(e)
     setEvent(Math.random())

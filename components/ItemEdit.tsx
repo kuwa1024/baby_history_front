@@ -37,7 +37,7 @@ export const ItemEdit: FC<PropsEvent> = ({ event, setEvent }) => {
   }, [item])
 
   const handleClick = () => {
-    const new_value = value == '選択' ? '' : value
+    const newValue = value == '選択' ? '' : value
     if (name == '') {
       setError(true)
       setHelperText('入力してください')
@@ -47,7 +47,7 @@ export const ItemEdit: FC<PropsEvent> = ({ event, setEvent }) => {
       setHelperText('')
     }
 
-    editItem(item.id, name, new_value, Timestamp.fromDate(new Date(datetime)))
+    editItem(item.id, name, newValue, Timestamp.fromDate(new Date(datetime)))
     setEvent(Math.random())
     router.push('/')
   }

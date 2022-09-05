@@ -20,7 +20,7 @@ export const ItemAdd: FC<PropsEvent> = ({ event, setEvent }) => {
   const { values } = useValues(name)
 
   const handleClick = () => {
-    const new_value = value == '選択' ? '' : value
+    const newValue = value == '選択' ? '' : value
     if (name == '') {
       setError(true)
       setHelperText('入力してください')
@@ -30,7 +30,7 @@ export const ItemAdd: FC<PropsEvent> = ({ event, setEvent }) => {
       setHelperText('')
     }
 
-    addItem(name, new_value)
+    addItem(name, newValue)
     setName('')
     setValue('')
     setEvent(Math.random())
