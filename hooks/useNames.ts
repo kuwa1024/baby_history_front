@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react'
 import { Name, getNames } from '../utils/common/name'
 
-export type UseNamesOutput = {
+type UseNames = {
   names: Name[]
 }
 
-const DEFAULT_OUTPUT: UseNamesOutput = {
+const init: UseNames = {
   names: [],
 }
 
-export function useNames(): UseNamesOutput {
-  const [output, setOutput] = useState(DEFAULT_OUTPUT)
+export function useNames(): UseNames {
+  const [value, setValue] = useState(init)
 
   useEffect(() => {
     void (() => {
       const { names } = getNames()
-      setOutput({ names })
+      setValue({ names })
     })()
   }, [])
 
-  return output
+  return value
 }

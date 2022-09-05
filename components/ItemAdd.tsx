@@ -3,48 +3,34 @@ import { useRouter } from 'next/router'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
-import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
+import { Dropdown } from '../components/elements/Dropdown'
 import { useNames } from '../hooks/useNames'
 import { useValues } from '../hooks/useValues'
 import { addItem } from '../hooks/addItem'
+import { PropsEvent } from '../types/propsEvent'
 
-type Props = {
-  event: number
-  setEvent: React.Dispatch<React.SetStateAction<number>>
-}
-
-export const ItemAdd: FC<Props> = ({ event, setEvent }) => {
+export const ItemAdd: FC<PropsEvent> = ({ event, setEvent }) => {
   const router = useRouter()
   const [name, setName] = useState('')
   const [value, setValue] = useState('')
-  const [inputError, setInputError] = useState(false)
-  const [inputErrorMessage, setInputErrorMessage] = useState('')
-
-  const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value)
-  }
-
-  const handleChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value)
-  }
-
+  const [error, setError] = useState(false)
+  const [helperText, setHelperText] = useState('')
   const { names } = useNames()
   const { values } = useValues(name)
 
   const handleClick = () => {
-    const new_value = value == '選択' ? '' : value
+    const newValue = value == '選択' ? '' : value
     if (name == '') {
-      setInputError(true)
-      setInputErrorMessage('入力してください')
+      setError(true)
+      setHelperText('入力してください')
       return
     } else {
-      setInputError(false)
-      setInputErrorMessage('')
+      setError(false)
+      setHelperText('')
     }
 
-    addItem(name, new_value)
+    addItem(name, newValue)
     setName('')
     setValue('')
     setEvent(Math.random())
@@ -66,40 +52,22 @@ export const ItemAdd: FC<Props> = ({ event, setEvent }) => {
         >
           履歴
         </Typography>
-        <TextField
+        <Dropdown
           id="name"
-          select
           label="名称"
-          error={inputError}
-          helperText={inputErrorMessage}
-          defaultValue=""
           value={name}
-          size="small"
-          sx={{ '.MuiSelect-select': { background: '#fff' } }}
-          onChange={handleChangeName}
-        >
-          {names.map((name) => (
-            <MenuItem key={name.name} value={name.name}>
-              {name.name}
-            </MenuItem>
-          ))}
-        </TextField>
-        <TextField
+          setValue={setName}
+          values={names}
+          error={error}
+          helperText={helperText}
+        />
+        <Dropdown
           id="value"
-          select
           label="内容"
-          defaultValue=""
           value={value}
-          size="small"
-          sx={{ '.MuiSelect-select': { background: '#fff' } }}
-          onChange={handleChangeValue}
-        >
-          {values.map((value) => (
-            <MenuItem key={value.name} value={value.name}>
-              {value.name}
-            </MenuItem>
-          ))}
-        </TextField>
+          setValue={setValue}
+          values={values}
+        />
         <Button color="inherit" size="large" onClick={handleClick}>
           登録
         </Button>

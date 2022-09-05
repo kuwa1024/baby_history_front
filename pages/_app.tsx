@@ -20,6 +20,7 @@ export default function MyApp(props: MyAppProps) {
   return (
     <CacheProvider value={emotionCache}>
       <Head>
+        <meta name="robots" content="noindex , nofollow" />
         <meta name="viewport" content="initial-scale=1, width=device-width" />
         <meta name="theme-color" content="#1976d2" />
         <title>赤ちゃん履歴</title>

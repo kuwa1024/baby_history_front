@@ -1,4 +1,5 @@
-import { CreateItem, add } from '../utils/firebase/items'
+import { add } from '../utils/firebase/items'
+import { CreateItem } from '../types/item'
 
 export function addItem(name: string, value: string): void {
   const item: CreateItem = {

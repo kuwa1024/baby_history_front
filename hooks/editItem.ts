@@ -1,19 +1,20 @@
 import { Timestamp } from 'firebase/firestore'
-import { Item, set, get } from '../utils/firebase/items'
+import { get, set } from '../utils/firebase/items'
+import { Item } from '../types/item'
 
-export function editItem(
+export async function editItem(
   id: string,
   name: string,
   value: string,
   datetime: Timestamp
-): void {
+): Promise<void> {
   const item: Item = {
     id: id,
     name: name,
     value: value,
     datetime: datetime,
   }
-  set(item)
+  await set(item)
 }
 
 export async function setAlarm(id: string): Promise<void> {
@@ -31,5 +32,5 @@ export async function setAlarm(id: string): Promise<void> {
     value: minutes.toString().concat('分'),
     datetime: item.datetime,
   }
-  set(setitem)
+  await set(setitem)
 }
